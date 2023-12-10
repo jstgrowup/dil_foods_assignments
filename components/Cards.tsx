@@ -23,7 +23,7 @@ function Cards({ brand, title, price, thumbnail, rating }: Product) {
           <h2 className="font-bold text-2xl">{price}</h2>
           <p className="text-green-500">{rating}</p>
         </div>
-        <button className="font-bold uppercase bg-sky-600 rounded-md text-white py-2 px-5 cursor-pointer transition-colors hover:bg-sky-700 text-sm mt-5 w-full">
+        <button className="font-bold uppercase bg-sky-600 rounded-md text-white py-2 px-5 cursor-pointer transition-colors hover:bg-sky-700 text-sm mt-5 w-full" onClick={()=>handleA}>
           Add To Cart
         </button>
       </div>
