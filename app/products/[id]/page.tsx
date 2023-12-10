@@ -35,7 +35,7 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
         throw Object.assign(error);
       })
       .finally(() => {
-        console.log("done");
+        
       });
   }, []);
 
@@ -80,11 +80,11 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
             Discount {data?.discountPercentage}% Off
           </h6>
           <div className="flex gap-3 text-[#e30217]">
-            {Array.from({ length: Math.round(data?.rating!) }).map(() => {
+            {Array.from({ length: Math.round(data?.rating!) }).map((_,index) => {
               return (
-                <>
+                <div key={index}>
                   <LiaStarSolid />
-                </>
+                </div>
               );
             })}
           </div>

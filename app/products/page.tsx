@@ -2,11 +2,12 @@
 import Cards from "@/components/Cards";
 import Navbar from "@/components/Navbar";
 import { jsonAxiosForProducts } from "@/helpers/json-axios";
+import { add } from "@/redux/Cartslice";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
-import {useDispatch} from "react-redux"
+import { useDispatch } from "react-redux";
 interface Product {
   id: number;
   title: string;
@@ -30,7 +31,7 @@ const fetchData = async () => {
       url: "https://dummyjson.com/products",
       method: "GET",
     });
-    console.log("data:", data);
+
     return data?.products;
   } catch (error) {}
 };
@@ -38,8 +39,11 @@ export default function Products() {
   const [loading, setloading] = useState(false);
   const [data, setdata] = useState<Product[]>([]);
   const [error, seterror] = useState("");
-  let dispatcher=usedis
-
+  const dispatcher = useDispatch();
+  const handleAdd = (product: any): any => {
+    product.quantity = 1;
+    dispatcher(add(product));
+  };
   useEffect(() => {
     setloading(true);
     fetchData()
@@ -67,9 +71,9 @@ export default function Products() {
         <div className="grid lg:grid-cols-4 md:grid-cols-2 md:gap-10 w-full  sm:grid-cols-1  ">
           {data?.map((item: Product) => {
             return (
-              <Link href={`/products/${item.id}`} key={item.id}>
-                <Cards {...item} />
-              </Link>
+              <div key={item.id}>
+                <Cards {...item} handleAdd={() => handleAdd(item)} />
+              </div>
             );
           })}
         </div>
