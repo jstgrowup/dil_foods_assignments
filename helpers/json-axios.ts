@@ -3,7 +3,7 @@ interface Options {
   url: string;
   method: string;
 }
-export const jsonAxiosForProducts= async (options: Options) => {
+export const jsonAxios= async (options: Options) => {
   return axios(options)
     .then((response) => {
       return response.data;

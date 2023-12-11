@@ -1,13 +1,9 @@
 "use client";
 import Cards from "@/components/Cards";
-import Navbar from "@/components/Navbar";
-import { jsonAxiosForProducts } from "@/helpers/json-axios";
+import { jsonAxios } from "@/helpers/json-axios";
 import { add } from "@/redux/Cartslice";
-import axios from "axios";
-import Image from "next/image";
-import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 interface Product {
   id: number;
   title: string;
@@ -25,15 +21,47 @@ interface Product {
 interface Products {
   products: Product[];
 }
+const fetchData = async () => {
+  try {
+    const data: Products = await jsonAxios({
+      url: "https://dummyjson.com/products",
+      method: "GET",
+    });
 
+    return data?.products;
+  } catch (error) {
+    throw error;
+  }
+};
 export default function Products() {
-  const { data } = useSelector((state: any) => state.Cart);
-
+  const [loading, setloading] = useState(false);
+  const [data, setdata] = useState<Product[]>([]);
+  const [error, seterror] = useState("");
   const dispatcher = useDispatch();
+  const handleAdd = (product: any): any => {
+    if (!product.quantity) {
+      product.quantity = 1;
+    }
+    dispatcher(add(product));
+  };
+  useEffect(() => {
+    setloading(true);
+    fetchData()
+      .then((result: any) => {
+        setdata(result);
+        setloading(false);
+      })
+      .catch((error: any) => {
+        seterror(error.message);
+      })
+      .finally(() => {
+        setloading(false);
+      });
+  }, []);
 
   return (
     <div>
-      {data.length === 0 && !data ? (
+      {loading ? (
         <div className="w-full  flex items-center justify-center">
           <img
             src="https://motiongraphicsphoebe.files.wordpress.com/2018/10/tumblr_nurhzkukqo1syz1nro1_500.gif"
@@ -45,7 +73,7 @@ export default function Products() {
           {data?.map((item: any) => {
             return (
               <div key={item.id}>
-                <Cards {...item} handleAdd={() => dispatcher(add(item))} />
+                <Cards {...item} handleAdd={() => handleAdd(item)} />
               </div>
             );
           })}
