@@ -7,11 +7,12 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 interface Product {
   id: number;
   title: string;
   description: string;
+  quantity: number;
   price: number;
   discountPercentage: number;
   rating: number;
@@ -25,42 +26,14 @@ interface Products {
   products: Product[];
 }
 
-const fetchData = async () => {
-  try {
-    const data: Products = await jsonAxiosForProducts({
-      url: "https://dummyjson.com/products",
-      method: "GET",
-    });
-
-    return data?.products;
-  } catch (error) {}
-};
 export default function Products() {
-  const [loading, setloading] = useState(false);
-  const [data, setdata] = useState<Product[]>([]);
-  const [error, seterror] = useState("");
+  const { data } = useSelector((state: any) => state.Cart);
+
   const dispatcher = useDispatch();
-  const handleAdd = (product: any): any => {
-    product.quantity = 1;
-    dispatcher(add(product));
-  };
-  useEffect(() => {
-    setloading(true);
-    fetchData()
-      .then((result: any) => {
-        setdata(result);
-        setloading(false);
-      })
-      .catch((error: any) => {
-        seterror(error.message);
-      })
-      .finally(() => {
-        setloading(false);
-      });
-  }, []);
+
   return (
     <div>
-      {loading ? (
+      {data.length === 0 && !data ? (
         <div className="w-full  flex items-center justify-center">
           <img
             src="https://motiongraphicsphoebe.files.wordpress.com/2018/10/tumblr_nurhzkukqo1syz1nro1_500.gif"
@@ -69,10 +42,10 @@ export default function Products() {
         </div>
       ) : (
         <div className="grid lg:grid-cols-4 md:grid-cols-2 md:gap-10 w-full  sm:grid-cols-1  ">
-          {data?.map((item: Product) => {
+          {data?.map((item: any) => {
             return (
               <div key={item.id}>
-                <Cards {...item} handleAdd={() => handleAdd(item)} />
+                <Cards {...item} handleAdd={() => dispatcher(add(item))} />
               </div>
             );
           })}
