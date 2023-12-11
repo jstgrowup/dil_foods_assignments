@@ -1,5 +1,5 @@
 "use client";
-import { jsonAxiosForProducts } from "@/helpers/json-axios";
+import { jsonAxios } from "@/helpers/json-axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { LiaStarSolid } from "react-icons/lia";
@@ -21,8 +21,9 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
   const [data, setdata] = useState<Product | null>(null);
   const [images, setimages] = useState<string[]>([""]);
   const [activeImage, setactiveImage] = useState<string>("");
+
   useEffect(() => {
-    jsonAxiosForProducts({
+    jsonAxios({
       url: `https://dummyjson.com/products/${params?.id}`,
       method: "GET",
     })
@@ -34,9 +35,7 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
       .catch((error: any) => {
         throw Object.assign(error);
       })
-      .finally(() => {
-        
-      });
+      .finally(() => {});
   }, []);
 
   return (
@@ -80,13 +79,15 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
             Discount {data?.discountPercentage}% Off
           </h6>
           <div className="flex gap-3 text-[#e30217]">
-            {Array.from({ length: Math.round(data?.rating!) }).map((_,index) => {
-              return (
-                <div key={index}>
-                  <LiaStarSolid />
-                </div>
-              );
-            })}
+            {Array.from({ length: Math.round(data?.rating!) }).map(
+              (_, index) => {
+                return (
+                  <div key={index}>
+                    <LiaStarSolid />
+                  </div>
+                );
+              }
+            )}
           </div>
           <div className="flex flex-row items-center gap-12">
             <div className="flex flex-row items-center">

@@ -8,6 +8,7 @@ import {
   increaseQuantity,
   remove,
 } from "@/redux/Cartslice";
+import { useRouter } from "next/navigation";
 interface Product {
   id: number;
   title: string;
@@ -22,6 +23,7 @@ interface Product {
   images: [string];
 }
 export default function Cart() {
+  const router = useRouter();
   const { cart, totalQuantity, totalPrice } = useSelector(
     (state: any) => state.Cart
   );
@@ -40,7 +42,10 @@ export default function Cart() {
               <div className="bg-gray-200 p-4 rounded-md shadow-md border-4 flex justify-between">
                 <h2 className="text-lg font-semibold mb-2">{title}</h2>
 
-                <p className="text-gray-800 font-semibold mb-2"><span>&#8377;</span>{price}</p>
+                <p className="text-gray-800 font-semibold mb-2">
+                  <span>&#8377;</span>
+                  {price}
+                </p>
                 <div className="flex items-center">
                   <label className="mr-2">Quantity:</label>
                   <div className="flex flex-row items-center">
@@ -83,9 +88,13 @@ export default function Cart() {
         </div>
         <div className="flex justify-between items-center py-2">
           <span className="text-gray-600">Total Price:</span>
-          <span className="text-gray-800 font-semibold"> <span>&#8377;</span>{totalPrice}</span>
+          <span className="text-gray-800 font-semibold">
+            {" "}
+            <span>&#8377;</span>
+            {totalPrice}
+          </span>
         </div>
-        <button className="bg-pink-800 text-white px-4 py-2 rounded-md mt-4">
+        <button className="bg-pink-800 text-white px-4 py-2 rounded-md mt-4" onClick={()=>router.push("/checkout")}>
           Checkout
         </button>
       </div>

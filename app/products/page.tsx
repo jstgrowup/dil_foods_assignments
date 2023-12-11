@@ -1,7 +1,7 @@
 "use client";
 import Cards from "@/components/Cards";
 import { jsonAxios } from "@/helpers/json-axios";
-import { add } from "@/redux/Cartslice";
+import { add, cartTotal } from "@/redux/Cartslice";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 interface Product {
@@ -34,7 +34,6 @@ const fetchData = async () => {
   }
 };
 export default function Products() {
-  const [loading, setloading] = useState(false);
   const [data, setdata] = useState<Product[]>([]);
   const [error, seterror] = useState("");
   const dispatcher = useDispatch();
@@ -43,9 +42,9 @@ export default function Products() {
       product.quantity = 1;
     }
     dispatcher(add(product));
+    dispatcher(cartTotal());
   };
   useEffect(() => {
-    setloading(true);
     fetchData()
       .then((result: any) => {
         setdata(result);
@@ -54,31 +53,18 @@ export default function Products() {
       .catch((error: any) => {
         seterror(error.message);
       })
-      .finally(() => {
-        setloading(false);
-      });
+      .finally(() => {});
   }, []);
 
   return (
-    <div>
-      {loading ? (
-        <div className="w-full  flex items-center justify-center">
-          <img
-            src="https://motiongraphicsphoebe.files.wordpress.com/2018/10/tumblr_nurhzkukqo1syz1nro1_500.gif"
-            alt=""
-          />
-        </div>
-      ) : (
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 md:gap-10 w-full  sm:grid-cols-1  ">
-          {data?.map((item: any) => {
-            return (
-              <div key={item.id}>
-                <Cards {...item} handleAdd={() => handleAdd(item)} />
-              </div>
-            );
-          })}
-        </div>
-      )}
+    <div className="grid lg:grid-cols-4 md:grid-cols-2 md:gap-10 w-full  sm:grid-cols-1  ">
+      {data?.map((item: any) => {
+        return (
+          <div key={item.id}>
+            <Cards {...item} handleAdd={() => handleAdd(item)} />
+          </div>
+        );
+      })}
     </div>
   );
 }
