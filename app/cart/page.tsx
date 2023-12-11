@@ -9,19 +9,8 @@ import {
   remove,
 } from "@/redux/Cartslice";
 import { useRouter } from "next/navigation";
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
-  brand: string;
-  category: string;
-  thumbnail: string;
-  images: [string];
-}
+import { CartInterface } from "@/helpers/interfaces";
+
 export default function Cart() {
   const router = useRouter();
   const { cart, totalQuantity, totalPrice } = useSelector(
@@ -29,20 +18,23 @@ export default function Cart() {
   );
   const dispatcher = useDispatch();
   useEffect(() => {
-    dispatcher(cartTotal());
+    dispatcher(cartTotal(cart));
   }, [cart]);
 
   return (
-    <div className="  p-8 bg-white shadow-md">
-      <h1 className="text-2xl font-semibold mb-4">Shopping Cart</h1>
-      {cart?.length > 0 ? (
-        cart?.map(({ id, title, price, description, quantity }: any) => {
-          return (
-            <div className="gap-8 border w-full" key={id}>
-              <div className="bg-gray-200 p-4 rounded-md shadow-md border-4 flex justify-between">
-                <h2 className="text-lg font-semibold mb-2">{title}</h2>
+    <div className=" p-8 bg-white ">
+      <h1 className="text-2xl font-semibold mb-3">Shopping Cart</h1>
+      <div className="w-full flex-col gap-10">
+        {cart?.length > 0 ? (
+          cart?.map(({ id, title, price, description, quantity }: any) => {
+            return (
+              <div
+                className="bg-gray-200 p-4 rounded-md shadow-md flex items-center justify-between my-4"
+                key={id}
+              >
+                <h2 className="text-lg font-semibold ">{title}</h2>
 
-                <p className="text-gray-800 font-semibold mb-2">
+                <p className="text-gray-800 font-semibold ">
                   <span>&#8377;</span>
                   {price}
                 </p>
@@ -71,15 +63,14 @@ export default function Cart() {
                   </div>
                 </div>
               </div>
-            </div>
-          );
-        })
-      ) : (
-        <div>
-          <h1>no cart products</h1>
-        </div>
-      )}
-
+            );
+          })
+        ) : (
+          <div>
+            <h1>no cart products</h1>
+          </div>
+        )}
+      </div>
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-4">Cart Summary</h2>
         <div className="flex justify-between items-center border-t border-b py-2">
@@ -94,7 +85,10 @@ export default function Cart() {
             {totalPrice}
           </span>
         </div>
-        <button className="bg-pink-800 text-white px-4 py-2 rounded-md mt-4" onClick={()=>router.push("/checkout")}>
+        <button
+          className="bg-pink-800 text-white px-4 py-2 rounded-md mt-4"
+          onClick={() => router.push("/checkout")}
+        >
           Checkout
         </button>
       </div>

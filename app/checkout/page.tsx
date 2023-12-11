@@ -1,4 +1,5 @@
 "use client";
+import { ProductInterface } from "@/helpers/interfaces";
 import React from "react";
 import { useSelector } from "react-redux";
 
@@ -17,7 +18,7 @@ function Checkout() {
           <div className="border-black border-5 p-8 flex  items-center justify-evenly gap-4">
             <div>
               <h2 className="text-xl font-semibold mb-2">Order Summary</h2>
-              {cart.map((cartItem: any) => {
+              {cart.map((cartItem: ProductInterface) => {
                 return (
                   <div className="flex justify-between mb-2">
                     <span>{cartItem.title}</span>

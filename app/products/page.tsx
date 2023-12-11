@@ -1,9 +1,10 @@
 "use client";
 import Cards from "@/components/Cards";
+import { ProductInterface } from "@/helpers/interfaces";
 import { jsonAxios } from "@/helpers/json-axios";
 import { add, cartTotal } from "@/redux/Cartslice";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 interface Product {
   id: number;
   title: string;
@@ -37,18 +38,18 @@ export default function Products() {
   const [data, setdata] = useState<Product[]>([]);
   const [error, seterror] = useState("");
   const dispatcher = useDispatch();
+  const { cart } = useSelector((state: any) => state.Cart);
   const handleAdd = (product: any): any => {
     if (!product.quantity) {
       product.quantity = 1;
     }
     dispatcher(add(product));
-    dispatcher(cartTotal());
+    dispatcher(cartTotal(cart));
   };
   useEffect(() => {
     fetchData()
-      .then((result: any) => {
+      .then((result: ProductInterface[]) => {
         setdata(result);
-        setloading(false);
       })
       .catch((error: any) => {
         seterror(error.message);
@@ -58,7 +59,7 @@ export default function Products() {
 
   return (
     <div className="grid lg:grid-cols-4 md:grid-cols-2 md:gap-10 w-full  sm:grid-cols-1  ">
-      {data?.map((item: any) => {
+      {data?.map((item: ProductInterface) => {
         return (
           <div key={item.id}>
             <Cards {...item} handleAdd={() => handleAdd(item)} />

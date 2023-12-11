@@ -1,4 +1,5 @@
 "use client";
+import { ProductInterface } from "@/helpers/interfaces";
 import { jsonAxios } from "@/helpers/json-axios";
 import {
   add,
@@ -28,13 +29,13 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
   const [data, setdata] = useState<Product | null>(null);
   const [images, setimages] = useState<string[]>([""]);
   const [activeImage, setactiveImage] = useState<string>("");
-  const [cartProduct, setcartProduct] = useState<any>(null);
+  const [cartProduct, setcartProduct] = useState<ProductInterface>();
 
   const { cart, totalQuantity, totalPrice } = useSelector(
     (state: any) => state.Cart
   );
   const fetchQuantity = () => {
-    const targetCartProduct = cart.find((item: any) => item.id == params.id);
+    const targetCartProduct = cart.find((item: ProductInterface) => item.id == Number(params.id));
     setcartProduct(targetCartProduct);
   };
   const dispatcher = useDispatch();
@@ -53,7 +54,7 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
         setdata(result);
         setimages(result?.images);
         setactiveImage(result?.thumbnail);
-        dispatcher(cartTotal());
+        dispatcher(cartTotal(cart));
         fetchQuantity();
       })
       .catch((error: any) => {
