@@ -6,7 +6,6 @@ function Checkout() {
   const { cart, totalPrice, totalQuantity } = useSelector(
     (store: any) => store.Cart
   );
-  console.log("cart:", cart);
 
   return (
     <>

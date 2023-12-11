@@ -1,8 +1,15 @@
 "use client";
 import { jsonAxios } from "@/helpers/json-axios";
+import {
+  add,
+  cartTotal,
+  decreaseQuantity,
+  increaseQuantity,
+} from "@/redux/Cartslice";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { LiaStarSolid } from "react-icons/lia";
+import { useDispatch, useSelector } from "react-redux";
 interface Product {
   id: number;
   title: string;
@@ -21,7 +28,22 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
   const [data, setdata] = useState<Product | null>(null);
   const [images, setimages] = useState<string[]>([""]);
   const [activeImage, setactiveImage] = useState<string>("");
+  const [cartProduct, setcartProduct] = useState<any>(null);
 
+  const { cart, totalQuantity, totalPrice } = useSelector(
+    (state: any) => state.Cart
+  );
+  const fetchQuantity = () => {
+    const targetCartProduct = cart.find((item: any) => item.id == params.id);
+    setcartProduct(targetCartProduct);
+  };
+  const dispatcher = useDispatch();
+  const handleAddToCart = (product: any): any => {
+    if (!product.quantity) {
+      product.quantity = 1;
+    }
+    dispatcher(add(product));
+  };
   useEffect(() => {
     jsonAxios({
       url: `https://dummyjson.com/products/${params?.id}`,
@@ -31,12 +53,14 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
         setdata(result);
         setimages(result?.images);
         setactiveImage(result?.thumbnail);
+        dispatcher(cartTotal());
+        fetchQuantity();
       })
       .catch((error: any) => {
         throw Object.assign(error);
       })
       .finally(() => {});
-  }, []);
+  }, [cart]);
 
   return (
     <>
@@ -91,15 +115,30 @@ function ProductDetailPage({ params }: { params: { id: string } }) {
           </div>
           <div className="flex flex-row items-center gap-12">
             <div className="flex flex-row items-center">
-              <button className="bg-gray-200 py-2 px-4 rounded-lg text-[#e30217] text-3xl">
+              <button
+                onClick={() =>
+                  dispatcher(decreaseQuantity(Number(params.id)))
+                }
+                className="bg-gray-200 py-2 px-4 rounded-lg text-[#e30217] text-3xl"
+              >
                 -
               </button>
-              <span className="py-4 px-6 rounded-lg">1</span>
-              <button className="bg-gray-200 py-2 px-4 rounded-lg text-[#e30217] text-3xl">
+              <span className="py-4 px-6 rounded-lg">
+                {cartProduct?.quantity ? cartProduct.quantity : 0}
+              </span>
+              <button
+                onClick={() =>
+                  dispatcher(increaseQuantity(Number(params.id)))
+                }
+                className="bg-gray-200 py-2 px-4 rounded-lg text-[#e30217] text-3xl"
+              >
                 +
               </button>
             </div>
-            <button className="bg-[#e30217] text-white font-semibold py-3 px-6 rounded-xl h-full">
+            <button
+              onClick={() => handleAddToCart(data)}
+              className="bg-[#e30217] text-white font-semibold py-3 px-6 rounded-xl h-full"
+            >
               Add to Cart
             </button>
           </div>

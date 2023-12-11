@@ -25,19 +25,19 @@ function Cards({
         <img
           src={thumbnail}
           alt="product"
-          className=" md:w-full rounded-t-lg h-48"
+          className=" md:w-full rounded-t-lg h-56"
         />
       </Link>
 
-      <div className="p-3 flex flex-col items-center">
+      <div className="p-2 flex flex-col items-center">
         <p className="">{brand}</p>
-        <h3 className="font-bold text-xl mb-">{title}</h3>
+        <h3 className="font-bold text-xl ">{title}</h3>
         <div className=" flex justify-center items-center gap-4">
           <h2 className="font-bold text-2xl">{price}</h2>
           <p className="text-green-500">{rating}</p>
         </div>
         <button
-          className="font-bold uppercase bg-sky-600 rounded-md text-white py-2 px-5 cursor-pointer transition-colors hover:bg-sky-700 text-sm mt-5 w-full"
+          className="font-bold uppercase bg-sky-600 rounded-md text-white py-2 px-5 cursor-pointer transition-colors hover:bg-sky-700 text-sm mt-2 w-full"
           onClick={handleAdd}
         >
           Add To Cart

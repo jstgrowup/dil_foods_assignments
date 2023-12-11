@@ -48,6 +48,7 @@ const cartSlice = createSlice({
         if (item.id === action.payload) {
           return { ...item, quantity: item.quantity + 1 };
         }
+
         return item;
       });
     },
